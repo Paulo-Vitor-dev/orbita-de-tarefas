@@ -1,0 +1,15 @@
+# .NET
+**/bin/
+**/obj/
+
+# Angular / Node
+**/node_modules/
+**/dist/
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
