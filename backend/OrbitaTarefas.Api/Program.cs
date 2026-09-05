@@ -71,4 +71,38 @@ app.MapPost("/api/tarefas", (Tarefa novaTarefa) =>
     return Results.Created($"/api/tarefas/{novaTarefa.Id}", novaTarefa);
 });
 
+app.MapPut("/api/tarefas/{id}", (int id, Tarefa tarefaAtualizada) =>
+{
+    var tarefa = tarefas.FirstOrDefault(t => t.Id == id);
+
+    if (tarefa is null)
+    {
+        return Results.NotFound();
+    }
+
+    if (string.IsNullOrWhiteSpace(tarefaAtualizada.Titulo))
+    {
+        return Results.BadRequest("O título da tarefa é obrigatório.");
+    }
+
+    tarefa.Titulo = tarefaAtualizada.Titulo;
+    tarefa.Descricao = tarefaAtualizada.Descricao;
+    tarefa.Concluida = tarefaAtualizada.Concluida;
+
+    return Results.Ok(tarefa);
+});
+
+app.MapDelete("/api/tarefas/{id}", (int id) =>
+{
+    var tarefa = tarefas.FirstOrDefault(t => t.Id == id);
+
+    if (tarefa is null)
+    {
+        return Results.NotFound();
+    }
+
+    tarefas.Remove(tarefa);
+
+    return Results.NoContent();
+});
 app.Run();
