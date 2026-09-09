@@ -1,37 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using OrbitaTarefas.Api.Data;
 using OrbitaTarefas.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
-var tarefas = new List<Tarefa>
-{
-    new Tarefa
-    {
-        Id = 1,
-        Titulo = "Estudar C#",
-        Descricao = "Continuar o desenvolvimento do Órbita de Tarefas",
-        Concluida = false
-    },
-
-    new Tarefa
-    {
-        Id = 2,
-        Titulo = "Estudar Angular",
-        Descricao = "Aprender integração com APIs REST",
-        Concluida = false
-    },
-
-    new Tarefa
-    {
-        Id = 3,
-        Titulo = "Criar interface",
-        Descricao = "Desenvolver a interface inicial do Órbita de Tarefas",
-        Concluida = true
-    }
-};
 
 if (app.Environment.IsDevelopment())
 {
@@ -40,14 +18,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/api/tarefas", () =>
+app.MapGet("/api/tarefas", async (AppDbContext context) =>
 {
-    return tarefas;
+    var tarefas = await context.Tarefas.ToListAsync();
+
+    return Results.Ok(tarefas);
 });
 
-app.MapGet("/api/tarefas/{id}", (int id) =>
+app.MapGet("/api/tarefas/{id}", async (int id, AppDbContext context) =>
 {
-    var tarefa = tarefas.FirstOrDefault(t => t.Id == id);
+    var tarefa = await context.Tarefas.FindAsync(id);
 
     if (tarefa is null)
     {
@@ -57,23 +37,23 @@ app.MapGet("/api/tarefas/{id}", (int id) =>
     return Results.Ok(tarefa);
 });
 
-app.MapPost("/api/tarefas", (Tarefa novaTarefa) =>
+app.MapPost("/api/tarefas", async (Tarefa novaTarefa, AppDbContext context) =>
 {
     if (string.IsNullOrWhiteSpace(novaTarefa.Titulo))
     {
         return Results.BadRequest("O título da tarefa é obrigatório.");
     }
 
-    novaTarefa.Id = tarefas.Count + 1;
+    context.Tarefas.Add(novaTarefa);
 
-    tarefas.Add(novaTarefa);
+    await context.SaveChangesAsync();
 
     return Results.Created($"/api/tarefas/{novaTarefa.Id}", novaTarefa);
 });
 
-app.MapPut("/api/tarefas/{id}", (int id, Tarefa tarefaAtualizada) =>
+app.MapPut("/api/tarefas/{id}", async (int id, Tarefa tarefaAtualizada, AppDbContext context) =>
 {
-    var tarefa = tarefas.FirstOrDefault(t => t.Id == id);
+    var tarefa = await context.Tarefas.FindAsync(id);
 
     if (tarefa is null)
     {
@@ -89,20 +69,25 @@ app.MapPut("/api/tarefas/{id}", (int id, Tarefa tarefaAtualizada) =>
     tarefa.Descricao = tarefaAtualizada.Descricao;
     tarefa.Concluida = tarefaAtualizada.Concluida;
 
+    await context.SaveChangesAsync();
+
     return Results.Ok(tarefa);
 });
 
-app.MapDelete("/api/tarefas/{id}", (int id) =>
+app.MapDelete("/api/tarefas/{id}", async (int id, AppDbContext context) =>
 {
-    var tarefa = tarefas.FirstOrDefault(t => t.Id == id);
+    var tarefa = await context.Tarefas.FindAsync(id);
 
     if (tarefa is null)
     {
         return Results.NotFound();
     }
 
-    tarefas.Remove(tarefa);
+    context.Tarefas.Remove(tarefa);
+
+    await context.SaveChangesAsync();
 
     return Results.NoContent();
 });
+
 app.Run();
