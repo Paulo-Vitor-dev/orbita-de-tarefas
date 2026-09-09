@@ -1,0 +1,18 @@
+<main class="app-container">
+  <header class="app-header">
+    <span class="app-label">ÓRBITA DE TAREFAS</span>
+
+    <h1>{{ titulo }}</h1>
+
+    <p>
+      Organize suas atividades e acompanhe o que precisa ser feito.
+    </p>
+  </header>
+
+  <section class="tarefas">
+    @for (tarefa of tarefas; track tarefa.id) {
+    <app-tarefa-item [tarefa]="tarefa"></app-tarefa-item>
+    }
+  </section>
+
+</main>

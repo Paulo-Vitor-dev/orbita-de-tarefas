@@ -1,0 +1,33 @@
+.app-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 64px 24px;
+}
+
+.app-header {
+  max-width: 620px;
+}
+
+.app-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.app-header h1 {
+  margin: 12px 0;
+  font-size: 48px;
+}
+
+.app-header p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #666;
+}
+
+.tarefas {
+  display: grid;
+  gap: 16px;
+  margin-top: 48px;
+}
