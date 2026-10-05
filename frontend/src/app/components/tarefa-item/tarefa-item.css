@@ -1,22 +1,164 @@
-.tarefa {
+:host {
+  display: block;
+}
+
+.tarefa-item {
   display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 0;
+  animation: rise 0.4s cubic-bezier(.2, .7, .2, 1) both;
+  transition: opacity .28s ease, transform .28s ease;
+}
+
+.tarefa-item.removendo {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-.5rem);
+}
+
+.toggle {
+  position: relative;
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  margin-top: .125rem;
+  border: 1px solid var(--input);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--primary-foreground);
+  cursor: pointer;
+  transition: border-color .2s ease, background-color .2s ease;
+}
+
+.toggle:hover {
+  border-color: var(--accent);
+}
+
+.toggle.concluida {
+  border-color: var(--success);
+  background: var(--success);
+}
+
+.toggle svg {
+  width: .875rem;
+  height: .875rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+}
+
+.orbit-dot {
+  width: .375rem;
+  height: .375rem;
+  border-radius: 50%;
+  background: var(--orbit);
+  transition: background-color .2s ease;
+}
+
+.toggle:hover .orbit-dot {
+  background: var(--accent);
+}
+
+.conteudo {
+  min-width: 0;
+  flex: 1;
+}
+
+.titulo-linha {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-
-  padding: 24px;
-
-  background: white;
-  border: 1px solid #e5e5e5;
-  border-radius: 16px;
+  gap: .25rem .75rem;
 }
 
-.tarefa h2 {
-  margin: 0 0 8px;
-  font-size: 18px;
-}
-
-.tarefa p {
+h3 {
   margin: 0;
-  color: #666;
+  overflow-wrap: anywhere;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color .2s ease;
+}
+
+h3.concluida {
+  color: var(--muted-foreground);
+  text-decoration: line-through;
+  text-decoration-color: var(--orbit);
+}
+
+.status {
+  font-family: var(--font-mono);
+  font-size: .625rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--accent);
+}
+
+.status.concluida {
+  color: var(--success);
+}
+
+p {
+  margin: .25rem 0 0;
+  overflow-wrap: anywhere;
+  color: var(--muted-foreground);
+  font-size: .875rem;
+}
+
+.acoes {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-start;
+  gap: .25rem;
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+
+.tarefa-item:hover .acoes,
+.tarefa-item:focus-within .acoes {
+  opacity: 1;
+}
+
+.acoes button {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 0;
+  border-radius: .375rem;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+
+.acoes button:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.acoes button.excluir:hover {
+  color: var(--destructive);
+}
+
+.acoes svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+@media (max-width: 640px) {
+  .acoes {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tarefa-item {
+    animation: none;
+    transition: none;
+  }
 }

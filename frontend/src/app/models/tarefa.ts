@@ -4,3 +4,5 @@ export interface Tarefa {
   descricao: string;
   concluida: boolean;
 }
+
+export type TarefaInput = Omit<Tarefa, 'id'>;

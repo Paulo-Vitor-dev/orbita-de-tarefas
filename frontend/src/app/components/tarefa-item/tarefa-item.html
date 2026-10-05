@@ -1,10 +1,39 @@
-<article class="tarefa">
-  <div>
-    <h2>{{ tarefa().titulo }}</h2>
-    <p>{{ tarefa().descricao }}</p>
+<li class="tarefa-item" [class.removendo]="removendo" [style.animation-delay.ms]="index < 8 ? index * 40 : 320">
+  <button type="button" class="toggle" [class.concluida]="tarefa.concluida"
+    [attr.aria-label]="tarefa.concluida ? 'Reabrir ' + tarefa.titulo : 'Concluir ' + tarefa.titulo"
+    [attr.aria-pressed]="tarefa.concluida" (click)="alternar.emit()">
+    @if (tarefa.concluida) {
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M3.5 8.5l3 3 6-7" />
+    </svg>
+    } @else {
+    <span class="orbit-dot" aria-hidden="true"></span>
+    }
+  </button>
+
+  <div class="conteudo">
+    <div class="titulo-linha">
+      <h3 [class.concluida]="tarefa.concluida">{{ tarefa.titulo }}</h3>
+      <span class="status" [class.concluida]="tarefa.concluida">
+        {{ tarefa.concluida ? '● Concluída' : '○ Pendente' }}
+      </span>
+    </div>
+    @if (tarefa.descricao) {
+    <p>{{ tarefa.descricao }}</p>
+    }
   </div>
 
-  <span>
-    {{ tarefa().concluida ? 'Concluída' : 'Pendente' }}
-  </span>
-</article>
+  <div class="acoes">
+    <button type="button" (click)="editar.emit()" [attr.aria-label]="'Editar ' + tarefa.titulo" title="Editar">
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M11 2.5l2.5 2.5L6 12.5H3.5V10z" />
+      </svg>
+    </button>
+    <button type="button" class="excluir" (click)="excluir.emit()" [attr.aria-label]="'Excluir ' + tarefa.titulo"
+      title="Excluir">
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.5 8.5h6l.5-8.5" />
+      </svg>
+    </button>
+  </div>
+</li>

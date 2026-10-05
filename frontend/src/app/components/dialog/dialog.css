@@ -1,0 +1,50 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: color-mix(in oklab, var(--foreground) 20%, transparent);
+  animation: fade .2s ease both;
+}
+
+.dialog {
+  width: 100%;
+  max-width: 32rem;
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+  background: var(--card);
+  padding: 2rem;
+  animation: rise .28s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+h2 {
+  margin: 0 0 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .dialog {
+    max-width: none;
+    border-radius: 1rem 1rem 0 0;
+    padding: 1.5rem;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

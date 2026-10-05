@@ -1,13 +1,9 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "cli": {
-    "packageManager": "npm",
-    "analytics": "11278e26-344e-4231-9f12-a22d720044a0"
-  },
   "newProjectRoot": "projects",
   "projects": {
-    "orbita-tarefas-web": {
+    "orbita-de-tarefas-frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -34,11 +30,6 @@
                   "type": "initial",
                   "maximumWarning": "500kB",
                   "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
                 }
               ],
               "outputHashing": "all"
@@ -55,18 +46,19 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "orbita-tarefas-web:build:production"
+              "buildTarget": "orbita-de-tarefas-frontend:build:production"
             },
             "development": {
-              "buildTarget": "orbita-tarefas-web:build:development"
+              "buildTarget": "orbita-de-tarefas-frontend:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
-        },
-        "test": {
-          "builder": "@angular/build:unit-test"
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

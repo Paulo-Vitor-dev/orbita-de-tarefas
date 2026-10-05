@@ -1,18 +1,117 @@
-<main class="app-container">
-  <header class="app-header">
-    <span class="app-label">ÓRBITA DE TAREFAS</span>
+<main class="app-shell">
+  <svg aria-hidden="true" viewBox="0 0 600 600" class="orbit-decor">
+    <g fill="none" stroke="currentColor" stroke-width="1">
+      <circle cx="300" cy="300" r="140" />
+      <circle cx="300" cy="300" r="210" stroke-dasharray="2 6" />
+      <circle cx="300" cy="300" r="280" />
+    </g>
+    <g class="orbit-dot-anim">
+      <circle cx="300" cy="90" r="4" class="accent-fill" />
+    </g>
+    <circle cx="300" cy="300" r="140" fill="none" class="progress-orbit" stroke-width="1.5"
+      [attr.stroke-dasharray]="circunferenciaProgresso + ' 9999'" transform="rotate(-90 300 300)" />
+  </svg>
 
-    <h1>{{ titulo }}</h1>
+  <div class="container">
+    <header>
+      <div>
+        <p class="eyebrow"><span aria-hidden="true"></span> Órbita de Tarefas</p>
+        <h1>Minhas tarefas</h1>
+        <p class="subtitulo">Tudo o que está em movimento, em um só lugar.</p>
+      </div>
+      <button type="button" class="nova" (click)="abrirNova()"><span aria-hidden="true">+</span> Nova tarefa</button>
+    </header>
 
-    <p>
-      Organize suas atividades e acompanhe o que precisa ser feito.
-    </p>
-  </header>
+    <section aria-label="Resumo" class="resumo">
+      <div>
+        <p>Total</p><strong>{{ status === 'ok' ? total : '—' }}</strong>
+      </div>
+      <div>
+        <p>Pendentes</p><strong>{{ status === 'ok' ? pendentes : '—' }}</strong>
+      </div>
+      <div>
+        <p>Concluídas</p><strong>{{ status === 'ok' ? concluidas : '—' }}</strong>
+      </div>
+    </section>
 
-  <section class="tarefas">
-    @for (tarefa of tarefas; track tarefa.id) {
-    <app-tarefa-item [tarefa]="tarefa"></app-tarefa-item>
+    <div class="progresso" aria-hidden="true"><span [style.width.%]="progressoPercentual"></span></div>
+
+    <section class="lista" aria-labelledby="lista-titulo">
+      <div class="lista-topo">
+        <h2 id="lista-titulo" class="sr-only">Lista de tarefas</h2>
+        <div class="filtros" role="tablist" aria-label="Filtrar tarefas">
+          <button type="button" role="tab" [attr.aria-selected]="filtro === 'todas'" [class.ativo]="filtro === 'todas'"
+            (click)="definirFiltro('todas')">Todas</button>
+          <button type="button" role="tab" [attr.aria-selected]="filtro === 'pendentes'"
+            [class.ativo]="filtro === 'pendentes'" (click)="definirFiltro('pendentes')">Pendentes</button>
+          <button type="button" role="tab" [attr.aria-selected]="filtro === 'concluidas'"
+            [class.ativo]="filtro === 'concluidas'" (click)="definirFiltro('concluidas')">Concluídas</button>
+        </div>
+        <button type="button" class="atualizar" (click)="carregar()">Atualizar</button>
+      </div>
+
+      @if (status === 'loading') {
+      <div role="status" class="estado carregando">
+        <span class="spinner" aria-hidden="true"><span></span></span>
+        Carregando tarefas...
+      </div>
+      }
+
+      @if (status === 'erro') {
+      <div role="alert" class="erro-box">
+        <p>Não foi possível carregar as tarefas.</p>
+        <span>{{ erroMsg }}</span>
+        <button type="button" (click)="carregar()">Tentar novamente</button>
+      </div>
+      }
+
+      @if (status === 'ok' && tarefasVisiveis.length === 0) {
+      <div class="vazio">
+        <svg viewBox="0 0 80 80" aria-hidden="true">
+          <circle cx="40" cy="40" r="30" stroke-dasharray="2 4" />
+          <circle cx="40" cy="40" r="4" class="centro" />
+          <circle cx="70" cy="40" r="3" class="satellite" />
+        </svg>
+        <p>Nenhuma tarefa encontrada.</p>
+        <span>{{ total === 0 ? 'Crie a primeira para colocar algo em órbita.' : 'Nada neste filtro.' }}</span>
+      </div>
+      }
+
+      @if (status === 'ok' && tarefasVisiveis.length > 0) {
+      <ul class="tarefas">
+        @for (tarefa of tarefasVisiveis; track tarefa.id; let i = $index) {
+        <app-tarefa-item [tarefa]="tarefa" [index]="i" [removendo]="removendo === tarefa.id"
+          (alternar)="alternar(tarefa)" (editar)="abrirEdicao(tarefa)"
+          (excluir)="pedirExclusao(tarefa)"></app-tarefa-item>
+        }
+      </ul>
+      }
+    </section>
+  </div>
+
+  @if (formAberto) {
+  <app-dialog [titulo]="tarefaEdicao ? 'Editar tarefa' : 'Nova tarefa'" (fechar)="fecharForm()">
+    <app-tarefa-form [inicial]="tarefaEdicao" [enviando]="salvando" [erroExterno]="erroForm" (salvar)="salvar($event)"
+      (cancelar)="fecharForm()"></app-tarefa-form>
+  </app-dialog>
+  }
+
+  @if (confirmar) {
+  <app-dialog titulo="Excluir tarefa?" (fechar)="confirmar = null">
+    <p class="confirmacao">"<strong>{{ confirmar.titulo }}</strong>" será removida permanentemente.</p>
+    <div class="confirmacao-acoes">
+      <button type="button" class="cancelar" (click)="confirmar = null">Cancelar</button>
+      <button type="button" class="deletar" (click)="excluir()">Excluir</button>
+    </div>
+  </app-dialog>
+  }
+
+  <div class="toasts" aria-live="polite">
+    @for (toast of toasts; track toast.id) {
+    <div class="toast" [attr.role]="toast.tipo === 'erro' ? 'alert' : 'status'">
+      <span class="toast-dot" [class.erro]="toast.tipo === 'erro'" aria-hidden="true"></span>
+      <span><span class="sr-only">{{ toast.tipo === 'ok' ? 'Sucesso: ' : 'Erro: ' }}</span>{{ toast.msg }}</span>
+    </div>
     }
-  </section>
-
+  </div>
 </main>

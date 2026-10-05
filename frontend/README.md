@@ -1,59 +1,101 @@
-# OrbitaTarefasWeb
+# Órbita de Tarefas — Front-End Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.7.
+Front-End da aplicação **Órbita de Tarefas**, preparado para consumir a API REST em ASP.NET Core.
 
-## Development server
+## Stack
 
-To start a local development server, run:
+- Angular
+- TypeScript
+- HTML
+- CSS
+- Angular HttpClient
+- RxJS
 
-```bash
-ng serve
+A estrutura foi mantida enxuta e sem dependências da plataforma usada para gerar a versão visual de referência.
+
+## Integração com o backend
+
+Durante o desenvolvimento o Angular usa `proxy.conf.json` para encaminhar todas as chamadas iniciadas por `/api` para:
+
+```text
+http://localhost:5188
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+O serviço de tarefas usa:
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```text
+/api/tarefas
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Com o backend em `http://localhost:5188` e o Angular em `http://localhost:4200`, o proxy evita a necessidade de configurar CORS apenas para o desenvolvimento local via `ng serve`.
 
-```bash
-ng generate --help
+Endpoints esperados:
+
+- `GET /api/tarefas`
+- `GET /api/tarefas/{id}`
+- `POST /api/tarefas`
+- `PUT /api/tarefas/{id}`
+- `DELETE /api/tarefas/{id}`
+
+Modelo esperado:
+
+```ts
+interface Tarefa {
+  id: number;
+  titulo: string;
+  descricao: string;
+  concluida: boolean;
+}
 ```
 
-## Building
+## Como executar
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+1. Inicie a API ASP.NET Core na porta 5188.
+2. Instale as dependências do Front-End:
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+3. Inicie o Angular:
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+4. Acesse:
 
-## Additional Resources
+```text
+http://localhost:4200
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Estrutura principal
+
+```text
+src/app/
+├── components/
+│   ├── dialog/
+│   ├── tarefa-form/
+│   └── tarefa-item/
+├── models/
+│   └── tarefa.ts
+├── services/
+│   └── tarefa.service.ts
+├── app.config.ts
+├── app.css
+├── app.html
+└── app.ts
+```
+
+## Funcionalidades preparadas
+
+- listagem de tarefas via API;
+- estados de carregamento, vazio e erro;
+- filtros: todas, pendentes e concluídas;
+- criação de tarefa;
+- edição de tarefa;
+- conclusão/reabertura;
+- exclusão com confirmação;
+- feedback por toast;
+- resumo de total, pendentes e concluídas;
+- integração local por proxy com o backend .NET.

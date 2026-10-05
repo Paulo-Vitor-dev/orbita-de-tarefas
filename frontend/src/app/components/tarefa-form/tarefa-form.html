@@ -1,0 +1,30 @@
+<form (ngSubmit)="enviar()" novalidate>
+  <div class="campo">
+    <label for="titulo">Título <span>*</span></label>
+    <input id="titulo" name="titulo" [(ngModel)]="titulo" [attr.aria-invalid]="!!erro && !titulo.trim()"
+      [attr.aria-describedby]="erro || erroExterno ? 'form-erro' : null" placeholder="Ex.: Revisar relatório"
+      maxlength="200" autofocus>
+  </div>
+
+  <div class="campo">
+    <label for="descricao">Descrição</label>
+    <textarea id="descricao" name="descricao" [(ngModel)]="descricao" rows="4"
+      placeholder="Detalhes opcionais"></textarea>
+  </div>
+
+  <label class="check">
+    <input type="checkbox" name="concluida" [(ngModel)]="concluida">
+    Marcar como concluída
+  </label>
+
+  @if (erro || erroExterno) {
+  <p id="form-erro" role="alert" class="erro">{{ erro || erroExterno }}</p>
+  }
+
+  <div class="botoes">
+    <button type="button" class="secundario" (click)="cancelar.emit()">Cancelar</button>
+    <button type="submit" class="primario" [disabled]="enviando">
+      {{ enviando ? 'Salvando...' : (inicial ? 'Salvar alterações' : 'Criar tarefa') }}
+    </button>
+  </div>
+</form>
