@@ -58,10 +58,9 @@ Entity Framework Core
    ↓
 SQLite
 
-
 ## 📁 Estrutura do projeto
 
-
+```text
 orbita-de-tarefas/
 │
 ├── backend/
@@ -120,6 +119,28 @@ orbita-de-tarefas/
 ├── .gitignore
 └── README.md
 
+```
+### Back-End
+
+O Back-End é uma API REST desenvolvida com **C# e ASP.NET Core**.
+
+- `Models/Tarefa.cs` define a entidade principal da aplicação.
+- `Data/AppDbContext.cs` realiza a integração com o Entity Framework Core.
+- `Migrations/` mantém o histórico da estrutura do banco de dados.
+- `Program.cs` configura os serviços e os endpoints REST.
+- Os dados são persistidos em um banco **SQLite**.
+
+### Front-End
+
+O Front-End foi desenvolvido com **Angular e TypeScript**.
+
+- `components/` contém os componentes reutilizáveis da interface.
+- `tarefa-item/` representa visualmente uma tarefa.
+- `tarefa-form/` controla criação e edição.
+- `dialog/` fornece a estrutura dos modais da aplicação.
+- `models/tarefa.ts` define o contrato TypeScript da entidade.
+- `services/tarefa.service.ts` centraliza a comunicação HTTP com a API.
+- `proxy.conf.json` redireciona as requisições `/api` para o Back-End durante o desenvolvimento.
 
 📦 Modelo de dados
 Back-End — C#
