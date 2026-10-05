@@ -57,40 +57,69 @@ AppDbContext
 Entity Framework Core
    ↓
 SQLite
-📁 Estrutura do projeto
+
+
+## 📁 Estrutura do projeto
+
+
 orbita-de-tarefas/
 │
 ├── backend/
 │   └── OrbitaTarefas.Api/
+│       │
 │       ├── Data/
 │       │   └── AppDbContext.cs
+│       │
 │       ├── Migrations/
+│       │   └── ...
+│       │
 │       ├── Models/
 │       │   └── Tarefa.cs
+│       │
+│       ├── Properties/
 │       ├── Program.cs
 │       ├── appsettings.json
+│       ├── appsettings.Development.json
 │       └── OrbitaTarefas.Api.csproj
 │
 ├── frontend/
+│   │
 │   ├── public/
+│   │
 │   ├── src/
+│   │   │
 │   │   ├── app/
+│   │   │   │
 │   │   │   ├── components/
 │   │   │   │   ├── dialog/
 │   │   │   │   ├── tarefa-form/
 │   │   │   │   └── tarefa-item/
+│   │   │   │
 │   │   │   ├── models/
 │   │   │   │   └── tarefa.ts
+│   │   │   │
 │   │   │   ├── services/
 │   │   │   │   └── tarefa.service.ts
-│   │   │   └── app.*
+│   │   │   │
+│   │   │   ├── app.config.ts
+│   │   │   ├── app.css
+│   │   │   ├── app.html
+│   │   │   └── app.ts
+│   │   │
+│   │   ├── index.html
 │   │   ├── main.ts
 │   │   └── styles.css
-│   ├── proxy.conf.json
+│   │
 │   ├── angular.json
-│   └── package.json
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── proxy.conf.json
+│   ├── tsconfig.json
+│   └── tsconfig.app.json
 │
-└── .gitignore
+├── .gitignore
+└── README.md
+
 
 📦 Modelo de dados
 Back-End — C#
